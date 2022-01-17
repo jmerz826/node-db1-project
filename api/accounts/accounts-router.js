@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const Account = require('./accounts-model')
+const {checkAccountPayload, checkAccountNameUnique} = require('./accounts-middleware')
 
 router.get('/', async (req, res, next) => {
   const accounts = await Account.getAll()
@@ -9,10 +10,10 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   Account.getById(req.params.id)
     .then(acc => {
-      if (acc.length > 0) {
+      if (acc) {
         res.status(200).json(acc)
       } else {
-        res.status(404).json({message: 'could not find account'})
+        res.status(404).json({message: 'account not found'})
       }
     })
     .catch(err => {
@@ -20,11 +21,11 @@ router.get('/:id', (req, res, next) => {
     })
 })
 
-router.post('/', (req, res, next) => {
-  const newPost = req.body
-  Account.create(newPost)
+router.post('/', checkAccountNameUnique, checkAccountPayload,  (req, res, next) => {
+  const {newAcct} = req
+  Account.create(newAcct)
     .then(() => {
-      res.status(200).json(newPost)
+      res.status(201).json(newAcct)
     })
     .catch(err => next(err))
 })

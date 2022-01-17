@@ -4,8 +4,8 @@ const getAll = () => {
   return db('accounts')
 }
 
-const getById = id => {
-  return db('accounts').where('id', id)
+const getById = async (id) => {
+  return db('accounts').where('id', id).first()
 }
 
 const create = async (account) => {
