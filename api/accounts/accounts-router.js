@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const Account = require('./accounts-model')
-const {checkAccountPayload, checkAccountNameUnique} = require('./accounts-middleware')
+const {checkAccountPayload, checkAccountNameUnique, checkAccountId} = require('./accounts-middleware')
 
 router.get('/', async (req, res, next) => {
   const accounts = await Account.getAll()
@@ -30,7 +30,7 @@ router.post('/', checkAccountNameUnique, checkAccountPayload,  (req, res, next) 
     .catch(err => next(err))
 })
 
-router.put('/:id', (req, res, next) => {
+router.put('/:id',checkAccountId, checkAccountPayload, (req, res, next) => {
   Account.updateById(req.params.id, req.body)
     .then(updated => {
       res.status(200).json(updated)
@@ -38,7 +38,7 @@ router.put('/:id', (req, res, next) => {
     .catch(() => next())
 });
 
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', checkAccountId, (req, res, next) => {
   Account.deleteById(req.params.id)
     .then(deletedAcc => {
       res.status(200).json(deletedAcc)
