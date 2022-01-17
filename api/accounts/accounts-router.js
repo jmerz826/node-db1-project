@@ -21,7 +21,12 @@ router.get('/:id', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-  // DO YOUR MAGIC
+  const newPost = req.body
+  Account.create(newPost)
+    .then(acc => {
+      res.status(200).json(newPost)
+    })
+    .catch(err => next(err))
 })
 
 router.put('/:id', (req, res, next) => {
