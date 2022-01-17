@@ -23,22 +23,26 @@ router.get('/:id', (req, res, next) => {
 router.post('/', (req, res, next) => {
   const newPost = req.body
   Account.create(newPost)
-    .then(acc => {
+    .then(() => {
       res.status(200).json(newPost)
     })
     .catch(err => next(err))
 })
 
 router.put('/:id', (req, res, next) => {
-  // DO YOUR MAGIC
+  Account.updateById(req.params.id, req.body)
+    .then(updated => {
+      res.status(200).json(updated)
+    })
+    .catch(() => next())
 });
 
 router.delete('/:id', (req, res, next) => {
-  // DO YOUR MAGIC
-})
-
-router.use((err, req, res, next) => { // eslint-disable-line
-  // DO YOUR MAGIC
+  Account.deleteById(req.params.id)
+    .then(deletedAcc => {
+      res.status(200).json(deletedAcc)
+    })
+    .catch(() => next())
 })
 
 module.exports = router;
