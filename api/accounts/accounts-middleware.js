@@ -24,7 +24,7 @@ exports.checkAccountNameUnique = async (req, res, next) => {
   try {
     const accounts = await Account.getAll()
     accounts.forEach(acc => {
-      if (acc.name === req.body.name) {
+      if (acc.name === req.newAcct.name) {
         res.status(400).json({message: 'that name is taken'})
       }
     })

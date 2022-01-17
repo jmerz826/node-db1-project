@@ -3,8 +3,12 @@ const Account = require('./accounts-model')
 const {checkAccountPayload, checkAccountNameUnique, checkAccountId} = require('./accounts-middleware')
 
 router.get('/', async (req, res, next) => {
-  const accounts = await Account.getAll()
-  res.status(200).json(accounts)
+  try {
+    const accounts = await Account.getAll()
+    res.status(200).json(accounts)
+  } catch (err){
+    next(err)
+  }
 })
 
 router.get('/:id', (req, res, next) => {
@@ -21,7 +25,7 @@ router.get('/:id', (req, res, next) => {
     })
 })
 
-router.post('/', checkAccountNameUnique, checkAccountPayload,  (req, res, next) => {
+router.post('/', checkAccountPayload, checkAccountNameUnique, (req, res, next) => {
   const {newAcct} = req
   Account.create(newAcct)
     .then(() => {
